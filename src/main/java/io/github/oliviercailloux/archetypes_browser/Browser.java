@@ -1,6 +1,7 @@
 package io.github.oliviercailloux.archetypes_browser;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -21,17 +22,10 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
 
-import org.apache.maven.plugins.maven_archetype_plugin.archetype_catalog._1_0.Archetype;
-import org.apache.maven.plugins.maven_archetype_plugin.archetype_catalog._1_0.ArchetypeCatalog;
-import org.apache.maven.plugins.maven_archetype_plugin.archetype_catalog._1_0.ObjectFactory;
+import org.apache.maven.archetype.catalog.Archetype;
+import org.apache.maven.archetype.catalog.ArchetypeCatalog;
+import org.apache.maven.archetype.catalog.io.xpp3.ArchetypeCatalogXpp3Reader;
 import org.jsoup.Jsoup;
 import org.jsoup.helper.W3CDom;
 import org.slf4j.Logger;
@@ -51,7 +45,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import io.github.oliviercailloux.http_utils.Downloader;
-import io.github.oliviercailloux.xml_utils.XmlUtils;
 
 public class Browser {
 	@SuppressWarnings("unused")
@@ -80,44 +73,16 @@ public class Browser {
 		refresh();
 		LOGGER.info("Refreshed.");
 
-		/**
-		 * The server sends an xml instance document that is entirely unqualified;
-		 * whereas the official schema (referenced here:
-		 * http://maven.apache.org/archetype/maven-archetype-plugin/specification/archetype-catalog.html
-		 * and found here: http://maven.apache.org/xsd/archetype-catalog-1.0.0.xsd)
-		 * expects all elements to be qualified. We thus rename every element to qualify
-		 * them.
-		 */
 		final Path catalogPath = Path.of("archetype-catalog.xml");
-		final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		factory.setNamespaceAware(true);
-		final DocumentBuilder builder = factory.newDocumentBuilder();
-		final Document doc = builder.parse(Files.newInputStream(catalogPath));
-		final String namespaceURI = "http://maven.apache.org/plugins/maven-archetype-plugin/archetype-catalog/1.0.0";
-		final List<Node> elements = XmlUtils.asList(doc.getElementsByTagName("*"));
-		for (Node element : elements) {
-			doc.renameNode(element, namespaceURI, element.getNodeName());
+		final List<Archetype> archetypes;
+		try (InputStream is = Files.newInputStream(catalogPath)) {
+			final ArchetypeCatalog cat = new ArchetypeCatalogXpp3Reader().read(is);
+			archetypes = cat.getArchetypes();
 		}
-//		final Path outPath = Path.of("out.xml");
-//		Files.writeString(outPath, write(doc));
-
-		final JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
-		final Unmarshaller unmarshaller = context.createUnmarshaller();
-		final Schema schema = SchemaFactory.newDefaultInstance()
-				.newSchema(getClass().getResource("archetype-catalog-1.0.0.xsd"));
-		unmarshaller.setSchema(schema);
-		final JAXBElement<ArchetypeCatalog> unmarshalled = unmarshaller.unmarshal(doc, ArchetypeCatalog.class);
-		final ArchetypeCatalog unmarshalledValue = unmarshalled.getValue();
-		final List<Archetype> archetypesReceived = unmarshalledValue.getArchetypes().getArchetype();
-		final ImmutableList<Archetype> archetypes = archetypesReceived.stream()
-				.collect(ImmutableList.toImmutableList());
-		final ImmutableSet.Builder<Artifact> artifactsBuilder = ImmutableSet.builder();
-		for (Archetype archetype : archetypes) {
-			final String groupId = archetype.getGroupId();
-			final String artifactId = archetype.getArtifactId();
-			artifactsBuilder.add(Artifact.given(groupId, artifactId));
-		}
-		final ImmutableSet<Artifact> artifacts = artifactsBuilder.build();
+		LOGGER.info("Found: {}.", archetypes.size());
+		final ImmutableSet<Artifact> artifacts = archetypes.stream()
+				.map(a -> Artifact.given(a.getGroupId(), a.getArtifactId())).collect(ImmutableSet.toImmutableSet());
+		LOGGER.info("Read: {}.", artifacts.size());
 
 		final ImmutableSet.Builder<ArtifactWithReleases> withReleasesBuilder = ImmutableSet.builder();
 		final ImmutableSet.Builder<Artifact> noReleasesBuilder = ImmutableSet.builder();
