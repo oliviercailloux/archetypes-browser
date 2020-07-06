@@ -156,7 +156,7 @@ public class Browser {
 	public void refresh() throws IOException {
 		final Downloader downloader = Downloader.saving();
 		final Client client = ClientBuilder.newClient();
-		final WebTarget target = client.target("https://repo1.maven.org/maven2/archetype-catalog.xml");
+		final WebTarget target = client.target("https://repo.maven.apache.org/maven2/archetype-catalog.xml");
 		downloader.readAndDownload(target);
 	}
 
