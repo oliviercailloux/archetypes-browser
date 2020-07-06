@@ -162,7 +162,7 @@ public class Browser {
 
 	public ImmutableList<ArtifactRelease> getReleases(Artifact artifact) {
 		final Client client = ClientBuilder.newClient();
-		final WebTarget target = client.target("https://repo1.maven.org/maven2/")
+		final WebTarget target = client.target("https://repo.maven.apache.org/maven2/")
 				.path(artifact.getGroupIdSlashSeparated()).path("/").path(artifact.getArtifactId()).path("/");
 		LOGGER.debug("Querying {}.", target.toString());
 		Document doc;
