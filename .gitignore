@@ -3,4 +3,6 @@
 .project
 target/
 out.log
+archetype-catalog.last-modified.txt
+archetype-catalog.xml
 
