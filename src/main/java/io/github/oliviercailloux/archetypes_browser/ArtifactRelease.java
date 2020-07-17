@@ -1,22 +1,27 @@
 package io.github.oliviercailloux.archetypes_browser;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.time.Instant;
 
 import com.google.common.base.MoreObjects;
 
 public class ArtifactRelease {
-	public static ArtifactRelease given(Artifact artifact, String version, Instant instant) {
-		return new ArtifactRelease(artifact, version, instant);
+	public static ArtifactRelease given(Artifact artifact, String version, String description, Instant releaseDate) {
+		return new ArtifactRelease(artifact, version, description, releaseDate);
 	}
 
 	private final Artifact artifact;
 	private final String version;
-	private final Instant instant;
+	private final String description;
 
-	private ArtifactRelease(Artifact artifact, String version, Instant instant) {
-		this.artifact = artifact;
-		this.version = version;
-		this.instant = instant;
+	private final Instant releaseDate;
+
+	private ArtifactRelease(Artifact artifact, String version, String description, Instant releaseDate) {
+		this.artifact = checkNotNull(artifact);
+		this.version = checkNotNull(version);
+		this.description = checkNotNull(description);
+		this.releaseDate = checkNotNull(releaseDate);
 	}
 
 	public Artifact getArtifact() {
@@ -27,13 +32,17 @@ public class ArtifactRelease {
 		return version;
 	}
 
-	public Instant getRelease() {
-		return instant;
+	public String getDescription() {
+		return description;
+	}
+
+	public Instant getReleaseDate() {
+		return releaseDate;
 	}
 
 	@Override
 	public String toString() {
 		return MoreObjects.toStringHelper(this).add("artifact", artifact).add("version", version)
-				.add("instant", instant).toString();
+				.add("description", description).add("instant", releaseDate).toString();
 	}
 }

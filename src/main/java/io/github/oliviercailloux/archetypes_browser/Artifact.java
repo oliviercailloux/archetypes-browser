@@ -2,10 +2,18 @@ package io.github.oliviercailloux.archetypes_browser;
 
 import java.util.Objects;
 
+import javax.json.bind.annotation.JsonbCreator;
+import javax.json.bind.annotation.JsonbProperty;
+import javax.json.bind.annotation.JsonbPropertyOrder;
+import javax.json.bind.annotation.JsonbTransient;
+
 import com.google.common.base.MoreObjects;
 
+@JsonbPropertyOrder({ "groupId", "artifactId" })
 public class Artifact {
-	public static Artifact given(String groupId, String artifactId) {
+	@JsonbCreator
+	public static Artifact given(@JsonbProperty("groupId") String groupId,
+			@JsonbProperty("artifactId") String artifactId) {
 		return new Artifact(groupId, artifactId);
 	}
 
@@ -21,6 +29,7 @@ public class Artifact {
 		return groupId;
 	}
 
+	@JsonbTransient
 	public String getGroupIdSlashSeparated() {
 		return groupId.replace('.', '/');
 	}
