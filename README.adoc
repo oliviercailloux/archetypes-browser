@@ -1,0 +1,22 @@
+= Archetypes-browser
+:groupId: io.github.oliviercailloux
+:artifactId: archetypes_browser
+:repository: archetypes_browser
+
+image:https://github.com/oliviercailloux/{repository}/workflows/Maven%20CI%20workflow/badge.svg?branch=master["Build Status", link="https://github.com/oliviercailloux/{repository}/actions"]
+image:https://maven-badges.herokuapp.com/maven-central/{groupId}/{artifactId}/badge.svg["Artifact on Maven Central", link="http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22{groupId}%22%20a%3A%22{artifactId}%22"]
+image:http://www.javadoc.io/badge/{groupId}/{artifactId}.svg["Javadocs", link="http://www.javadoc.io/doc/{groupId}/{artifactId}"]
+
+A project to generate lists of Maven archetypes found in public repositories. The lists are generated in CSV and JSON formats.
+
+See the files in this repository.
+
+Tell me if you are interested, and I will release a version for use as a library.
+
+== See also
+* https://stackoverflow.com/questions/635543/what-are-the-urls-of-all-the-maven-archetype-catalogs-that-you-know-about
+* https://blog.sonatype.com/2011/06/you-dont-need-a-browser-to-use-maven-central/ 
+* https://blog.sonatype.com/topic/maven-central 
+* https://central.sonatype.org/ 
+* https://github.com/sonatype-nexus-community/search-maven-org/issues/52 
+
