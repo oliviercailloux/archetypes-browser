@@ -1,7 +1,7 @@
 = Archetypes-browser
 :groupId: io.github.oliviercailloux
 :artifactId: archetypes_browser
-:repository: archetypes_browser
+:repository: archetypes-browser
 
 image:https://github.com/oliviercailloux/{repository}/workflows/Maven%20CI%20workflow/badge.svg?branch=master["Build Status", link="https://github.com/oliviercailloux/{repository}/actions"]
 image:https://maven-badges.herokuapp.com/maven-central/{groupId}/{artifactId}/badge.svg["Artifact on Maven Central", link="http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22{groupId}%22%20a%3A%22{artifactId}%22"]
@@ -11,7 +11,7 @@ A project to generate lists of Maven archetypes found in public repositories. Th
 
 See the files in this repository.
 
-Tell me if you are interested, and I will release a version for use as a library.
+Tell me if you are interested, and I will release a version for use as a library and add some documentation.
 
 == See also
 * https://stackoverflow.com/questions/635543/what-are-the-urls-of-all-the-maven-archetype-catalogs-that-you-know-about
